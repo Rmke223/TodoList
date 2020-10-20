@@ -67,7 +67,47 @@ export default class App extends Component {
       Fov
     })
   }
-  
+  completeAll() {
+    let list = this.state.list
+    for (var i in list) {
+      if (list[i].isDone == null || list[i].isDone == false) {
+        list[i].isDone = true
+      }
+    }
+    this.setState({
+      list
+    })
+  }
+
+  uncheckAll() {
+    let list = this.state.list
+    for (var i in list) {
+      if (list[i].isDone == true) {
+        list[i].isDone = false
+      }
+    }
+    this.setState({
+      list
+    })
+  }
+
+  removeCompleted() {
+    let list = this.state.list
+    var i = 0;
+    while (i < list.length) {
+      if (list[i].isDone == true) {
+        list.splice(i, 1);
+      } else {
+        ++i;
+      }
+    }
+    this.setState({
+      list
+    })
+  }
+
+
+
 
   render() {
     return (
@@ -80,6 +120,13 @@ export default class App extends Component {
           placeholder="Add Task"
         />
         <button className="btn btn-primary" onClick={() => this.addToList(this.state.userInput)}><b>Add</b></button>
+        <div className="container-fluid bg-success">
+          <div className="row d-flex justify-content-between">
+            <button onClick={() => this.completeAll()} className="btn btn-warning text-white col-4" type="button"><b>Complete All</b></button>
+            <button onClick={() => this.removeCompleted()} className="btn btn-warning text-white col-4" type="button"><b>Remove All Completed</b></button>
+            <button onClick={() => this.uncheckAll()} className="btn btn-warning text-white col-4" type="button"><b>Uncheck All</b></button>
+          </div>
+        </div>
         <ul className="list-group">
           {this.state.list.filter(this.state.Fov).map((item, i) =>
             <div
@@ -100,11 +147,12 @@ export default class App extends Component {
         </ul>
         <div className="container-fluid bg-success">
           <div className="row d-flex justify-content-between">
-            <button onClick={() => this.showAll()} className="btn btn-warning text-white" type="button"><b>Show All</b></button>
-            <button onClick={() => this.showActive()} className="btn btn-warning text-white" type="button"><b>Show Active</b></button>
-            <button onClick={() => this.showDone()} className="btn btn-warning text-white" type="button"><b>Show Done</b></button>
+            <button onClick={() => this.showAll()} className="btn btn-primary text-white col-4" type="button"><b>Show All</b></button>
+            <button onClick={() => this.showActive()} className="btn btn-primary text-white col-4" type="button"><b>Show Active</b></button>
+            <button onClick={() => this.showDone()} className="btn btn-primary text-white col-4" type="button"><b>Show Done</b></button>
           </div>
         </div>
+        <p className="text-primary">There are {this.state.list.filter(item => !item.isDone).length} uncomplete tasks</p>
       </div>
     )
   }
