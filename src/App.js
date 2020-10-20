@@ -12,7 +12,7 @@ export default class App extends Component {
       userInput: "",
       list: [],
       id: 0,
-      isDone: null
+      Fov: item => item
     }
   }
 
@@ -24,7 +24,7 @@ export default class App extends Component {
   }
   addToList(input) {
     let listArray = this.state.list;
-    listArray.push(input);
+    listArray.push({ name: input, isDone: null });
     this.setState({
       list: listArray,
       userInput: '',
@@ -38,21 +38,36 @@ export default class App extends Component {
     })
   }
 
- isClicked(){
-   let icon = this.state.isDone
-   if(icon == null){
-      icon = <i class="fas fa-check"></i>
-      this.setState({
-        isDone: icon
-      })
-   }
-   else{
-     this.setState({
-       isDone: null
-     })
-   }
- }
-
+  isClicked(name) {
+    let list = this.state.list;
+    let something = list.find(item => item.name == name)
+    something.isDone = !something.isDone;
+    this.setState({
+      list
+    })
+  }
+  showDone() {
+    let Fov = this.state.Fov
+    Fov = item => item.isDone
+    this.setState({
+      Fov
+    })
+  }
+  showAll() {
+    let Fov = this.state.Fov
+    Fov = item => item
+    this.setState({
+      Fov
+    })
+  }
+  showActive() {
+    let Fov = this.state.Fov
+    Fov = item => !item.isDone
+    this.setState({
+      Fov
+    })
+  }
+  
 
   render() {
     return (
@@ -66,26 +81,30 @@ export default class App extends Component {
         />
         <button className="btn btn-primary" onClick={() => this.addToList(this.state.userInput)}><b>Add</b></button>
         <ul className="list-group">
-          {this.state.list.map((val, i) =>
+          {this.state.list.filter(this.state.Fov).map((item, i) =>
             <div
-              key={val}
-              id={this.state.list.indexOf(val)}
+              key={i}
+              id={i}
               className="list-group-item d-flex justify-content-between text-primary">
-             <div className="col-1 border text-center"
-              onClick={(e) => this.isClicked(e.target.value)} >
-             {this.state.isDone}
-             </div>
-              {/* <input onChange={(e) => this.checkbox(e.target)} 
-              type="checkbox" 
-              className="form-check-input mt-2"></input> */}
-              <h4>{val}</h4>
+              <div className="col-1 border text-center"
+                onClick={() => this.isClicked(item.name)} >
+                {item.isDone && <i className="fas fa-check text-success"></i>}
+              </div>
+              <h4>{item.name}</h4>
               <button
                 onClick={() => this.removeFromList(i)}
-                className="btn btn-danger text-white">
+                className="btn btn-warning text-white">
                 <i className="far fa-trash-alt"></i>
               </button>
             </div>)}
         </ul>
+        <div className="container-fluid bg-success">
+          <div className="row d-flex justify-content-between">
+            <button onClick={() => this.showAll()} className="btn btn-warning text-white" type="button"><b>Show All</b></button>
+            <button onClick={() => this.showActive()} className="btn btn-warning text-white" type="button"><b>Show Active</b></button>
+            <button onClick={() => this.showDone()} className="btn btn-warning text-white" type="button"><b>Show Done</b></button>
+          </div>
+        </div>
       </div>
     )
   }
