@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
 
-
-
-
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +18,21 @@ export default class App extends Component {
     }, () => console.log(input)
     )
   }
+ 
+  componentDidUpdate() {
+    localStorage.setItem('list', JSON.stringify(this.state.list))
+  }
+  componentDidMount() {
+    if (localStorage.getItem('list') != null){
+      var todolist = JSON.parse(localStorage.getItem('list'));
+      this.setState({
+        list: todolist,
+      })
+    }
+  }
+
+
+
   addToList(input) {
     let listArray = this.state.list;
     listArray.push({ name: input, isDone: null });
@@ -37,7 +48,6 @@ export default class App extends Component {
       list: idArray
     })
   }
-
   isClicked(name) {
     let list = this.state.list;
     let something = list.find(item => item.name == name)
@@ -78,7 +88,6 @@ export default class App extends Component {
       list
     })
   }
-
   uncheckAll() {
     let list = this.state.list
     for (var i in list) {
@@ -105,9 +114,6 @@ export default class App extends Component {
       list
     })
   }
-
-
-
 
   render() {
     return (
